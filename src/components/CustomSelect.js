@@ -9,7 +9,7 @@ export default function CustomSelect({selected,setSelected,placeholder,options})
       }
 
     return (
-      <div className='mt-5'>
+      <div className='shadow-xl mt-5'>
           <Select
           onChange={onChangeSelect}
           options={options}

@@ -1,23 +1,39 @@
 import React, { useEffect, useState } from 'react'
-import axios from "axios";
+import axios from "../../api/axios";
+import requests from '../../api/requests'
 
 export default function MainPage() {
 
-    const [users,setUsers] = useState([]);
+    const [Posts,setPosts] = useState([]);
+
+    const [showModal, setShowModal] = useState(false);
+
+    const [memo,setMemo] = useState("");
+
+    const memoHandler = (e) => {
+      setMemo(e.target.value);
+    }
+
+    const postSubmitHandler = async () => {
+      // 게시글 저장
+      const res = await axios.post(requests.savePosts,{memo:memo})
+      console.log(res.data);
+    }
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      const res = await getUsers()
+    const fetchPosts = async () => {
+      const res = await getPosts(requests.fetchPosts)
       console.log(res);
-      setUsers(res);
+      setPosts(res);
     }
-    fetchUsers();
+    fetchPosts();
   },[]);
 
-  const getUsers = async () => {
+  const getPosts = async () => {
     let res = []
     try{
-      res = await axios.get("http://localhost:8080/users")
+      // 게시글 조회
+      res = await axios.get(requests.fetchPosts);
     } catch(e) {
       alert(e.message);
     } finally {
@@ -25,7 +41,7 @@ export default function MainPage() {
     }
   }
 
-    if(users.length === 0) {
+    if(Posts.length === 0) {
         return (
           <div className='App'>
             로딩중
@@ -34,6 +50,9 @@ export default function MainPage() {
       }else {
         return (
           <div className="App">
+            <form onSubmit={postSubmitHandler}>
+              <input placeholder="메모" value={memo} onChange={memoHandler}/>
+            </form>
             <div className="table w-full p-10">
               <div className='table-header-group'>
                 <div className='table-cell text-center'>이름</div>
@@ -44,31 +63,31 @@ export default function MainPage() {
                 <div className='table-cell text-center'>나이대</div>
                 <div className='table-cell text-center'>모스트 브롤러</div>
               </div>
-              {users.map((user) => (
+              {Posts.map((post) => (
     
-                <div key={user.userId} className="table-row">
+                <div key={post.postId} className="table-row">
                   <div className="table-cell text-center">
-                    <h5>{user.name}</h5>
+                    <h5>{post.user.name}</h5>
                   </div>
                   <div className="table-cell text-center">
-                    {user.trophies}
+                    {post.user.trophies}
                   </div>
                   <div className="table-cell text-center">
-                    {user.sex}
+                    {post.user.sex}
                   </div>
                   <div className="table-cell text-center">
-                    {user.createDate}
+                    {post.createDate}
                   </div>
                   <div className="table-cell text-center">
-                    {user.memo}
+                    {post.memo}
                   </div>
                   <div className="table-cell text-center">
-                    {user.ageGroup}
+                    {post.user.ageGroup}
                   </div>
                   <div className="table-cell text-center">
                     <div className='flex justify-center'>
-                    {user.userBrawlers.map((userBrawler) => (
-                      <div key={`${user.id}${userBrawler.brawler.name.toUpperCase()}`}>
+                    {post.user.userBrawlers.map((userBrawler) => (
+                      <div key={`${post.id}${userBrawler.brawler.name.toUpperCase()}`}>
                         <img className='w-10' 
                         alt={userBrawler.brawler.name.toUpperCase()}
                         src={`/images/brawlers/${userBrawler.brawler.name.toUpperCase()}.webp`}/>
