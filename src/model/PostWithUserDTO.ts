@@ -16,10 +16,17 @@
     mostBrawlers: MostBrawlers;
   }
 
-  type UserDTO = {
+  export type UserDTO = {
+    userEmail: string,
+    userPassword:string,
     playerTag: string;
     name: string;
     trophies: number;
     ageGroup: string;
     sex : string;
+  }
+
+  export type LoginDTO = {
+    userEmail: string,
+    userPassword:string,
   }

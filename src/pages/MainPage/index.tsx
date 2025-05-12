@@ -1,8 +1,7 @@
-import React, { JSX, useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import './modal.css'
 import { PostDTO } from '../../model/PostWithUserDTO.js';
-import {fetchPostsWithUser } from "../../api/posts.ts";
-import { JsxElement } from 'typescript';
+import {fetchPostsWithUser, fetchSavePost } from "../../api/requsts.ts";
 
 const MainPage:React.FC = () =>  {
 
@@ -16,15 +15,14 @@ const MainPage:React.FC = () =>  {
   const [playerId,setPlayerId] = useState(0);
 
   const [memo, setMemo] = useState("");
-  
+
   const memoHandler = (e:any) => {
     setMemo(e.target.value);
   }
 
   const postSubmitHandler = async () => {
     // 게시글 저장
-    // const res = await axios.post(requests.savePosts, { memo: memo,id:playerId })
-    // console.log(res.data);
+    const post = await fetchSavePost();
   }
 
   const postList = Posts.map((post:PostDTO) => {
@@ -49,7 +47,11 @@ const MainPage:React.FC = () =>  {
           {post.user.ageGroup}
         </div>
         <div className='table-cell text-center'>
-          모스트 브롤러
+          <div className='flex flew-column'>
+            <img width="30px" src={`/images/brawlers/${post.mostBrawlers.firstBrawler}.webp`}/>
+            <img width="30px" src={`/images/brawlers/${post.mostBrawlers.secondBrawler}.webp`}/>
+            <img width="30px" src={`/images/brawlers/${post.mostBrawlers.thirdBrawler}.webp`}/>
+          </div>
         </div>
     </div>
     )
@@ -113,7 +115,8 @@ const MainPage:React.FC = () =>  {
             <div className='table-cell text-center'>작성일</div>
             <div className='table-cell text-center'>메모</div>
             <div className='table-cell text-center'>나이대</div>
-            <div className='table-cell text-center'>모스트 브롤러</div>
+            <div className='table-cell text-center'>              
+            </div>
           </div>
           {postList}
         </div>

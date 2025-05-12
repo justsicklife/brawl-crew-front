@@ -1,14 +1,17 @@
-import axios from 'axios';
 import React, { useState } from 'react'
 import CustomSelect from '../../components/CustomSelect';
 import ageGroupOptions from '../../options/ageGroup';
 import sexOptions from '../../options/sex';
 import { useNavigate } from 'react-router-dom';
-
+import { fetchRegister } from "../../api/requsts";
 
 export default function SingUpPage() {
 
     const [playerTag, setPlayerTag] = useState("");
+
+    const [userEmail,setUserEmail] = useState("");
+
+    const [userPassword,setUserPassword] = useState("");
 
     const [ageGroupSelected, ageGroupSetSelected] = useState("");
 
@@ -24,13 +27,27 @@ export default function SingUpPage() {
         setPlayerTag(e.target.value);
     }
 
+    const onUserEmailTagHandler = (e) => {
+        setUserEmail(e.target.value)
+    }
+
+    const onUserPasswordTagHandler = (e) => {
+        setUserPassword(e.target.value)
+    }
+
     const SubmitHandler = async (e) => {
         e.preventDefault();
 
-        const req = { playerTag: playerTag, ageGroup: ageGroupSelected, sex: sexSelected };
-        console.log(req);
+        const userInfo = { 
+            playerTag: playerTag,
+            ageGroup: ageGroupSelected,
+            sex: sexSelected,
+            userEmail: userEmail,
+            userPassword : userPassword
+        };
+        console.log(userInfo);
         try {
-            const rep = await axios.post("http://localhost:8080/user", req);
+            const rep = await fetchRegister(userInfo);
             console.log(rep.data);
             navigate("/");
 
@@ -45,11 +62,31 @@ export default function SingUpPage() {
                 <div className='p-10 bg-white relative z-50 shadow-sm rounded-lg'>
                     <form
                         onSubmit={SubmitHandler}>
+                        <div className='my-3'>
+
+                        <input
+                        className='p-3 rounded-md outline-none shadow-xl'
+                        value={userEmail}
+                        placeholder='email'
+                        onChange={onUserEmailTagHandler} />
+                        </div>
+                        <div className='my-3'>
+
+                        <input
+                        className='p-3 rounded-md outline-none shadow-xl'
+                        value={userPassword}
+                        placeholder='password'
+                        onChange={onUserPasswordTagHandler} />
+                        </div>
+
+                        <div className='my-3'>
+
                         <input
                             className='p-3 rounded-md outline-none shadow-xl'
                             value={playerTag}
                             placeholder='PlayerTag'
                             onChange={onPlayerTagHandler} />
+                            </div>
                         <div>
                             <CustomSelect
                                 selected={ageGroupSelected}
@@ -66,7 +103,7 @@ export default function SingUpPage() {
                             />
                         </div>
                         <div className='mt-5 shadow-xl'>
-                            <button className='rounded-md w-full p-3 bg-green-400 hover:bg-green-500'>제출</button>
+                            <button type='submit' className='rounded-md w-full p-3 bg-green-400 hover:bg-green-500'>제출</button>
                         </div>
                     </form>
                 </div>
@@ -74,7 +111,7 @@ export default function SingUpPage() {
             <img
                 className='h-screen w-screen absolute left-0 top-0'
                 alt='create background'
-                src={`/images/background/create.webp`} />
+                src={'/images/background/create.webp'} />
         </div>
     )
 }
