@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { FormEvent, useEffect, useRef, useState } from 'react'
 import './modal.css'
 import { PostDTO } from '../../model/PostWithUserDTO.js';
 import {fetchPostsWithUser, fetchSavePost } from "../../api/requsts.ts";
@@ -20,9 +20,11 @@ const MainPage:React.FC = () =>  {
     setMemo(e.target.value);
   }
 
-  const postSubmitHandler = async () => {
+  const postSubmitHandler = async (e:FormEvent<HTMLFormElement>) => {
     // 게시글 저장
-    const post = await fetchSavePost();
+    e.preventDefault();
+    const post = await fetchSavePost(memo);
+    console.log(post);
   }
 
   const postList = Posts.map((post:PostDTO) => {
@@ -60,7 +62,6 @@ const MainPage:React.FC = () =>  {
   useEffect(() => {
     const fetchPosts = async () => {
       const res : PostDTO[] = await fetchPostsWithUser()
-      console.log(res);
       setIsRoading(true);
       setPosts(res);
     }

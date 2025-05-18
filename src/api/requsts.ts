@@ -15,9 +15,20 @@ export const fetchPostsWithUser  = async (): Promise<PostDTO[]> => {
   return response.data;
 };
 
-export const fetchSavePost = async (): Promise<String> => {
-  
-  const response = await axios(`${BASE_URL}${requsts.savePosts}`)
+export const fetchSavePost = async (memo:String): Promise<String> => {
+  const jwt: String = localStorage.getItem("jwt") ?? "";
+
+  const axiosInstance = axios.create({
+    baseURL: BASE_URL,
+    headers: {
+      "Accept":"application/json",
+      "Content-Type" : "application/json",
+      "Authorization" : `Bearer ${jwt}`,
+    },
+    responseType:"json"
+  });
+
+  const response = await axiosInstance.post(requsts.savePosts,{memo:memo});
   return response.data;
 }
 
